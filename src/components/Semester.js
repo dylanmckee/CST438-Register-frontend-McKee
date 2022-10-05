@@ -8,6 +8,13 @@ import Radio from '@mui/material/Radio';
 import {DataGrid} from '@mui/x-data-grid';
 import {SEMESTER_LIST} from '../constants.js'
 
+import ButtonGroup from '@mui/material/ButtonGroup';
+import AddStudent from './AddStudent.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+import {SERVER_URL} from '../constants.js'
+
 // user selects from a list of  (year, semester) values
 class Semester extends Component {
     constructor(props) {
@@ -19,6 +26,35 @@ class Semester extends Component {
     console.log("Semester.onRadioClick "+JSON.stringify(event.target.value));
     this.setState({selected: event.target.value});
   }
+    // Add Student
+    addStudent = (student) => {
+      const token = Cookies.get('XSRF-TOKEN');
+   
+      fetch(`${SERVER_URL}/student/`,
+        { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json',
+                     'X-XSRF-TOKEN': token  }, 
+          body: JSON.stringify(student)
+        })
+      .then(res => {
+          if (res.ok) {
+            toast.success("Student successfully added", {
+                position: toast.POSITION.BOTTOM_LEFT
+            });
+          } else {
+            toast.error("Error when adding", {
+                position: toast.POSITION.BOTTOM_LEFT
+            });
+            console.error('Post http status =' + res.status);
+          }})
+      .catch(err => {
+        toast.error("Error when adding", {
+              position: toast.POSITION.BOTTOM_LEFT
+          });
+          console.error(err);
+      })
+    } 
   
   render() {    
       const icolumns = [
@@ -45,6 +81,7 @@ class Semester extends Component {
     return (
        <div>
          <AppBar position="static" color="default">
+
             <Toolbar>
                <Typography variant="h6" color="inherit">
                   Schedule - select a term
@@ -63,6 +100,22 @@ class Semester extends Component {
                 Get Schedule
               </Button>
           </div>
+          <div>
+            <AppBar position="static" color="default">
+              <Toolbar>
+                <Typography variant="h6" color="inherit">
+                  <div>
+                        Admin
+                  </div>
+                  
+              <ButtonGroup>
+                      <AddStudent addStudent={this.addStudent}  />
+              </ButtonGroup>
+                    </Typography>
+                  </Toolbar>          
+                </AppBar>
+             </div>
+       
       </div>
     )
   }
