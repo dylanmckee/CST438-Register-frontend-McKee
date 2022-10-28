@@ -43,7 +43,7 @@ import TextField from '@mui/material/TextField';
  
       return (
           <div>
-            <Button variant="outlined" color="primary" style={{margin: 10}} onClick={handleClickOpen}>
+            <Button variant="outlined" color="primary" id="AddStudent" style={{margin: 10}} onClick={handleClickOpen}>
               Add Student
             </Button>
             <Dialog open={open} onClose={handleClose}>
